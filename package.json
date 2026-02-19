@@ -1,0 +1,14 @@
+{
+    "name": "exif-fov-estimation",
+    "version": "1.0.0",
+    "description": "Compute diagonal pixel focal length and FOV from image EXIF metadata",
+    "main": "src/index.js",
+    "type": "module",
+    "scripts": {
+        "start": "node src/index.js",
+        "test": "node --test test/fov.test.js"
+    },
+    "dependencies": {
+        "exiftool-vendored": "^35.9.0"
+    }
+}
