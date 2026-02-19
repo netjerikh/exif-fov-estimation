@@ -2,3 +2,4 @@ node_modules/
 assets/
 *.txt
 .DS_Store
+.vscode
