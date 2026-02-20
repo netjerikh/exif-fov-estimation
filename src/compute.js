@@ -90,17 +90,16 @@ function f35mmFromFocalPlane(meta) {
 
     let cropFactor = null;
 
-    if (sensor.sensorWidth) {
+    if (sensor.sensorWidth && sensor.sensorHeight) {
+        // Standard crop factor is the ratio of diagonals
+        const sensorDiag = Math.sqrt(
+            sensor.sensorWidth ** 2 + sensor.sensorHeight ** 2
+        );
+        cropFactor = SENSOR_DIAG_35MM / sensorDiag;
+    } else if (sensor.sensorWidth) {
         cropFactor = SENSOR_WIDTH_35MM / sensor.sensorWidth;
-    }
-
-    if (sensor.sensorHeight) {
-        const cropFactorY = SENSOR_HEIGHT_35MM / sensor.sensorHeight;
-        if (cropFactor === null) {
-            cropFactor = cropFactorY;
-        } else {
-            cropFactor = (cropFactor + cropFactorY) / 2;
-        }
+    } else if (sensor.sensorHeight) {
+        cropFactor = SENSOR_HEIGHT_35MM / sensor.sensorHeight;
     }
 
     if (cropFactor === null) return null;

@@ -7,7 +7,6 @@
  *
  * Extracts EXIF metadata from the supplied image and prints:
  *   • Diagonal pixel focal length (f_pixel)
- *   • Per-axis pixel focal lengths (fx, fy)
  *   • Horizontal, Vertical, and Diagonal FOV in degrees
  */
 
