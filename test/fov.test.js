@@ -54,6 +54,37 @@ describe("computeFov", () => {
     });
 });
 
+describe("computeFov portrait swap", () => {
+    it("computeFov always returns landscape-oriented values (hfov > vfov)", () => {
+        const { hfov, vfov } = computeFov(30);
+        assert.ok(hfov > vfov, `expected hfov (${hfov}) > vfov (${vfov})`);
+    });
+
+    it("should swap HFOV/VFOV for a portrait image regardless of orientation tag", () => {
+        // Simulates the logic in analyze(): computeFov gives landscape angles,
+        // then we swap when visual width < height.
+        const f35mm = 30;
+        let { hfov, vfov, dfov } = computeFov(f35mm);
+
+        // Case 1: HEIC with orientation=5 (raw 3088×2316 → visual 2316×3088)
+        const heic = adjustForOrientation(3088, 2316, 5);
+        let hfov1 = hfov, vfov1 = vfov;
+        if (heic.width < heic.height) [hfov1, vfov1] = [vfov1, hfov1];
+
+        // Case 2: JPG with orientation=1 (already stored as 2316×3088)
+        const jpg = adjustForOrientation(2316, 3088, 1);
+        let hfov2 = hfov, vfov2 = vfov;
+        if (jpg.width < jpg.height) [hfov2, vfov2] = [vfov2, hfov2];
+
+        // Both should produce the same portrait FOV
+        assert.equal(hfov1, hfov2);
+        assert.equal(vfov1, vfov2);
+
+        // Portrait: HFOV should be the narrower angle
+        assert.ok(hfov1 < vfov1, `portrait: expected hfov (${hfov1}) < vfov (${vfov1})`);
+    });
+});
+
 describe("computeDiagonalPixelFocalLength", () => {
     it("should be rotation-invariant", () => {
         const f1 = computeDiagonalPixelFocalLength(90, 6000, 4000);
