@@ -47,8 +47,6 @@ export async function analyze(filePath, { applyCloseFocusCorrection = false } = 
         meta.orientation
     );
 
-    const isRotated = meta.orientation >= 5 && meta.orientation <= 8;
-
     // Close-focus correction: when subject is at finite distance the
     // effective focal length increases, narrowing the FOV (thin-lens eq).
     const corr = applyCloseFocusCorrection
@@ -57,9 +55,10 @@ export async function analyze(filePath, { applyCloseFocusCorrection = false } = 
 
     let { hfov, vfov, dfov } = computeFov(f35mm * corr);
 
-    // Swap HFOV/VFOV for portrait orientations so the labels match the
-    // visual on-screen directions.
-    if (isRotated) {
+    // computeFov() derives angles from the 36 × 24 mm full-frame sensor in
+    // landscape orientation, so hfov is always the wider angle.  For portrait
+    // images we swap the two so the labels match the visual directions.
+    if (width < height) {
         [hfov, vfov] = [vfov, hfov];
     }
 
