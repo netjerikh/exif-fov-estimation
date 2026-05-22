@@ -1,12 +1,35 @@
 # FOV Estimation
 
-Extract **field of view** and **diagonal pixel focal length** from image EXIF metadata.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](https://nodejs.org/)
+[![EXIF](https://img.shields.io/badge/EXIF-metadata-blue.svg)](https://exiftool.org/)
+
+Extract **field of view (FOV)** and **diagonal pixel focal length** from image EXIF metadata — a lightweight Node.js tool for recovering camera intrinsics from real-world photos.
 
 Supports JPEG, HEIC, TIFF, PNG, DNG, CR2, NEF, ARW, and more — powered by [exiftool-vendored](https://github.com/photostructure/exiftool-vendored.js).
 
+## Why
+
+Many computer vision and photography workflows need camera intrinsics (focal length, FOV), but consumer photos only expose them indirectly through EXIF tags. This tool extracts them in a single call, with correct handling of:
+
+- **Cropped sensors** — converts focal length to a 35mm-equivalent using the scale factor
+- **Close-focus subjects** — optional thin-lens correction for finite subject distances
+- **Rotated images** — orientation-aware HFOV / VFOV swapping
+- **Diverse formats** — JPEG, HEIC, TIFF, PNG, and major RAW formats (DNG, CR2, NEF, ARW, …)
+
+Useful for **photogrammetry**, **Structure-from-Motion (SfM)** pipelines, **lens distortion correction**, **camera calibration** from consumer photos, and any computer vision task that needs camera intrinsics from real-world images.
+
+## Requirements
+
+- Node.js 18 or higher
+
 ## Install
 
+Clone the repository and install dependencies:
+
 ```bash
+git clone https://github.com/netjerikh/exif-fov-estimation.git
+cd exif-fov-estimation
 npm install
 ```
 
@@ -84,6 +107,7 @@ This accounts for the fact that at finite subject distances the effective focal 
 ## Orientation handling
 
 EXIF orientations 5–8 (90°/270° rotations) swap the visual width and height:
+
 - **HFOV / VFOV** are swapped so labels match the on-screen visual direction
 - **f_pixel (diagonal)** is unchanged — the diagonal is rotation-invariant
 
@@ -92,3 +116,7 @@ EXIF orientations 5–8 (90°/270° rotations) swap the visual width and height:
 ```bash
 npm test
 ```
+
+## License
+
+Released under the [MIT License](LICENSE).
